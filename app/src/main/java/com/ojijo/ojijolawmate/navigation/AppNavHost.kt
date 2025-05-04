@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.ojijo.ojijolawmate.ui.screens.courtdetails.CourtDetailScreen
 import com.ojijo.ojijolawmate.ui.screens.home.HomeScreen
 import com.ojijo.ojijolawmate.ui.screens.lawyer.LawyerScreen
 import com.ojijo.ojijolawmate.ui.screens.search.SearchScreen
@@ -37,7 +38,16 @@ fun AppNavHost(navController: NavHostController) { // Change NavController to Na
         composable(Routes.CourtInfoScreen) {
             CourtInfoScreen(navController)
         }
-
+        // Court details screen
+        composable(
+            route = "${Routes.CourtDetailScreen}/{courtName}",
+            arguments = listOf(
+                navArgument("courtName") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val courtName = backStackEntry.arguments?.getString("courtName") ?: ""
+            CourtDetailScreen(courtName = courtName)
+        }
         // ✅ Lawyer Detail Screen Route
         composable(
             route = Routes.LawyerDetailScreen,

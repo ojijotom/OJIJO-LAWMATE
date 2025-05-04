@@ -1,11 +1,13 @@
 package com.ojijo.ojijolawmate.ui.screens.lawyer
 
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ojijo.ojijolawmate.navigation.Routes
@@ -17,10 +19,11 @@ data class Lawyer(
     val phone: String
 )
 
-// --- Dummy Data ---
+// --- Sample Data (truncated for brevity, use your full list) ---
 val sampleLawyers = listOf(
     Lawyer("Nelson Havi", "Constitutional Law", "0700123456"),
     Lawyer("Martha Karua", "Human Rights Law", "0722123456"),
+    Lawyer("Ojijo Pascal", "Criminal Law", "0798000000"),
     Lawyer("Ahmednasir Abdullahi", "Commercial Law", "0718123456"),
     Lawyer("Paul Muite", "Criminal Law", "0721123456"),
     Lawyer("James Orengo", "Land and Property Law", "0733123456"),
@@ -75,43 +78,53 @@ val sampleLawyers = listOf(
     Lawyer("Muthomi Thionkulu", "Commercial Law", "0773123456"),
     Lawyer("Duncan Okatch", "Litigation", "0774123456"),
     Lawyer("Edward Omotii", "Corporate Law", "0775123456"),
-    Lawyer("Ojijo Pascal", "Criminal Law", "0798000000")
+    // ... (rest of the lawyers)
 )
 
-
 // --- UI Composables ---
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LawyerScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
-    // Filtered list based on search query
     val filteredLawyers = sampleLawyers.filter {
         it.name.contains(searchQuery, ignoreCase = true) ||
                 it.specialization.contains(searchQuery, ignoreCase = true)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text("Find a Lawyer", style = MaterialTheme.typography.titleLarge)
-
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            label = { Text("Search by Name or Specialization") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Find a Lawyer", style = MaterialTheme.typography.headlineSmall) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(filteredLawyers) { lawyer ->
-                LawyerCard(lawyer, navController)
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Search by name or specialization") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(filteredLawyers) { lawyer ->
+                    LawyerCard(lawyer = lawyer, navController = navController)
+                }
             }
         }
     }
@@ -120,16 +133,35 @@ fun LawyerScreen(navController: NavController) {
 @Composable
 fun LawyerCard(lawyer: Lawyer, navController: NavController) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp),
         onClick = {
-            navController.navigate(Routes.LawyerScreen .replace("{lawyerName}", lawyer.name))
-        }
+            navController.navigate(
+                Routes.LawyerDetailScreen.replace("{lawyerName}", lawyer.name)
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(6.dp),
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = lawyer.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Specialization: ${lawyer.specialization}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Contact: ${lawyer.phone}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = lawyer.name,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = "Specialization: ${lawyer.specialization}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Contact: ${lawyer.phone}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

@@ -3,26 +3,26 @@ package com.ojijo.ojijolawmate.ui.screens.courtinfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ojijo.ojijolawmate.navigation.Routes
 
-// --- Data Model ---
 data class Court(
     val name: String,
     val location: String,
     val contact: String
 )
 
-// --- Dummy Data ---
 val sampleCourts = listOf(
+    Court("Supreme Court of Kenya", "Nairobi", "+254 20 2221221"),
+    Court("Court of Appeal – Nairobi", "Nairobi", "+254 20 2221221"),
+    Court("High Court – Milimani Law Courts", "Nairobi", "+254 730 181001"),
+    Court("High Court – Mombasa", "Mombasa", "+254 41 2315141"),
     Court("Supreme Court of Kenya", "Nairobi", "+254 20 2221221"),
     Court("Court of Appeal – Nairobi", "Nairobi", "+254 20 2221221"),
     Court("High Court – Milimani Law Courts", "Nairobi", "+254 730 181000"),
@@ -69,20 +69,29 @@ val sampleCourts = listOf(
     Court("Magistrates Court – Kitengela", "Kitengela", "+254 45 2030140"),
     Court("Magistrates Court – Kangema", "Kangema", "+254 60 2030140"),
     Court("Magistrates Court – Garsen", "Garsen", "+254 46 2102100")
+    // Add other courts here...
 )
 
-
-// --- UI Composables ---
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourtInfoScreen(navController: NavController) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(sampleCourts) { court ->
-            CourtCard(court, navController)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Kenyan Courts", fontWeight = FontWeight.Bold) }
+            )
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(sampleCourts) { court ->
+                CourtCard(court = court, navController = navController)
+            }
         }
     }
 }
@@ -91,20 +100,36 @@ fun CourtInfoScreen(navController: NavController) {
 fun CourtCard(court: Court, navController: NavController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = court.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Location: ${court.location}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Contact: ${court.contact}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = court.name,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+            )
+            Spacer(modifier = Modifier.height(6.dp))
 
-            // Add button to navigate to another screen, e.g., CourtDetailScreen
+            Text(
+                text = "📍 Location: ${court.location}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "📞 Contact: ${court.contact}",
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Button(
                 onClick = {
-                    // Navigate to CourtDetailScreen, passing court details
                     navController.navigate("${Routes.CourtDetailScreen}/${court.name}")
                 },
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.small
             ) {
                 Text("View Details")
             }

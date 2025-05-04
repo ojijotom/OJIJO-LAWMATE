@@ -10,11 +10,9 @@ import kotlin.collections.listOf
 
 // Sample law data (use your actual data source here)
 private val sampleLaws = listOf(
-    Law("Section 302", "Punishment for Murder", "Whoever commits murder shall be punished with death or imprisonment for life."),
 Law("Section 376", "Punishment for Rape", "Whoever commits rape shall be punished with rigorous imprisonment for a term not less than 10 years."),
 Law("Section 420", "Cheating", "Cheating and dishonestly inducing delivery of property is punishable with 7 years jail and fine."),
 Law("Section 498A", "Cruelty by Husband", "Cruelty by husband or his relatives is punishable with imprisonment up to 3 years."),
-// Additional laws
 Law("Section 203", "Definition of Murder", "Murder is defined as the unlawful killing of another human being with malice aforethought."),
 Law("Section 204", "Punishment for Murder", "Any person convicted of murder shall be sentenced to death."),
 Law("Section 205", "Attempt to Murder", "Attempting to commit murder is punishable with imprisonment for life."),
